@@ -10,19 +10,57 @@ class M_Pelanggan extends CI_Model{
 	}
 
 	public function report_excell($tahun){
-		$query="SELECT `pembayaran`.*, `pelanggan`.`nama_pelanggan`
+		$query="SELECT * FROM pelanggan where tahun_pemasangan='$tahun'";
+
+		$hsl=$this->db->query($query);
+		return $hsl;
+		
+	}
+	public function report_excell2($tahun){
+		$query="SELECT `pembayaran`.*, `pelanggan`.`nama_pelanggan`,`pelanggan`.`desa`,`pelanggan`.`kecamatan`,`pelanggan`.`kategori`
 			FROM `pembayaran` JOIN `pelanggan`
 			ON `pembayaran`.`id_pelanggan` = `pelanggan`.`id_pelanggan` where `pembayaran`.`tahun`='$tahun'";
 
-		$hsl=$this->db->query($query)->result_array();
+		$hsl=$this->db->query($query);
 		return $hsl;
 		
 	}
-	public function pelaporan(){
-		$hsl=$this->db->query("SELECT * FROM laporan");
-		return $hsl;
+	public function pelaporan_pelanggan($keyword){
+		if(!$keyword == null){
+			$hsl=$this->db->query("SELECT tahun_pemasangan, COUNT(tahun_pemasangan) AS total
+			FROM pelanggan  where tahun_pemasangan='$keyword'
+			GROUP BY tahun_pemasangan");
+			return $hsl;
+		}else{
+			$hsl=$this->db->query("SELECT tahun_pemasangan, COUNT(tahun_pemasangan) AS total
+			FROM pelanggan
+			GROUP BY tahun_pemasangan");
+			return $hsl;
+		}
 		
 	}
+	public function pelaporan_pembayaran($keyword){
+		if(!$keyword == null){
+			$hsl=$this->db->query("SELECT tahun, COUNT(tahun) AS total
+			FROM pembayaran  where tahun='$keyword'
+			GROUP BY tahun");
+			return $hsl;
+		}else{
+			$hsl=$this->db->query("SELECT tahun, COUNT(tahun) AS total
+			FROM pembayaran
+			GROUP BY tahun");
+			return $hsl;
+		}
+		
+	}
+	// public function pelaporan2(){
+	// 	// $hsl=$this->db->query("SELECT * FROM laporan");
+	// 	$hsl=$this->db->query("SELECT tahun, COUNT(tahun_pemasangan) AS total
+	// 	FROM pelanggan
+	// 	GROUP BY tahun;");
+	// 	return $hsl;
+		
+	// }
 	public function report_pdf($id_pembayaran){
 
 		$query="SELECT `pembayaran`.*, `pelanggan`.`nama_pelanggan`

@@ -10,6 +10,9 @@
     $('#sampleTable').dataTable( {
     "searching": false
     } );
+    $('#sampleTable2').dataTable( {
+    "searching": false
+    } );
     </script>
 </body>
 

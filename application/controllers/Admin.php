@@ -1,6 +1,11 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
+require FCPATH.'vendor/autoload.php';
+
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 class Admin extends CI_Controller
 {
 
@@ -59,7 +64,10 @@ class Admin extends CI_Controller
 	{
 		$data['title'] = 'pelaporan';
 
-		$data['laporan'] = $this->M_Pelanggan->pelaporan();
+		$keyword = $this->input->post('keyword');
+
+		$data['laporan_pelanggan'] = $this->M_Pelanggan->pelaporan_pelanggan($keyword);
+		$data['laporan_pembayaran'] = $this->M_Pelanggan->pelaporan_pembayaran($keyword);
 
 		$this->load->view('admin/partial/admin_header');
 		$this->load->view('admin/partial/sidebar', $data);
@@ -86,62 +94,99 @@ class Admin extends CI_Controller
 	
 	
 	}
+	//function for data pelanggan
+	public function export_excell($tahun){
 
-	public function export_excell($tahun)
-	{
-		$data['report'] = $this->M_Pelanggan->report_excell($tahun);
+		// $data = $this->db->query("SELECT * FROM pembayaran WHERE tahun='$tahun'");
+		$data= $this->M_Pelanggan->report_excell($tahun);
 
-		require(APPPATH. 'PHPExcel-1.8/Classes/PHPExcel.php');
-		require(APPPATH. 'PHPExcel-1.8/Classes/PHPExcel/Writer/Excel2007.php');
+		$spreadsheet = new Spreadsheet();
+		$sheet = $spreadsheet->getActiveSheet();
 
-		$objPHPExcel = new PHPExcell();
-
-		$objPHPExcel->getProperties()->setCreator("pamdes");
-		$objPHPExcel->getProperties()->setLastModifiedBy("pamdes");
-		$objPHPExcel->getProperties()->setTitle("reporting");
-		$objPHPExcel->getProperties()->setSubject("");
-		$objPHPExcel->getProperties()->setDescription("");
-
-		$objPHPExcel->setActiveSheetIndex(0);
-
-		$objPHPExcel->getActiveSheet()->setCellValue('A1','No');
-		$objPHPExcel->getActiveSheet()->setCellValue('B1','Nomor Kartu');
-		$objPHPExcel->getActiveSheet()->setCellValue('C1','Nama Pengguna');
-		$objPHPExcel->getActiveSheet()->setCellValue('D1','Alamat');
-		$objPHPExcel->getActiveSheet()->setCellValue('E1','Kategori');
-		$objPHPExcel->getActiveSheet()->setCellValue('F1','RT');
+		$sheet->setCellValue('A1', 'No');
+		$sheet->setCellValue('B1', 'Nomor Kartu');
+		$sheet->setCellValue('C1', 'Nama Pengguna');
+		$sheet->setCellValue('D1', 'Alamat');
+		$sheet->setCellValue('E1', 'Kategori');
+		$sheet->setCellValue('F1', 'RT/RW');
+		$sheet->setCellValue('G1', 'METER PERTAMA');
+		$sheet->setCellValue('H1', 'TANGGAL pemasangan');
+		$sheet->setCellValue('I1', 'TANGGAL pemasangan');
 
 		$baris=2;
 		$x=1;
 
-		foreach ($data['report'] as $data) {
-			$objPHPExcel->getActiveSheet()->setCellValue('A'.$baris,$x);
-			$objPHPExcel->getActiveSheet()->setCellValue('B'.$baris,$data->$id_pelanggan);
-			$objPHPExcel->getActiveSheet()->setCellValue('C'.$baris,$data->$nama_pelanggan);
-			$objPHPExcel->getActiveSheet()->setCellValue('D'.$baris,$data->$alamat);
-			$objPHPExcel->getActiveSheet()->setCellValue('E'.$baris,$data->$kategori);
-			$objPHPExcel->getActiveSheet()->setCellValue('F'.$baris,$data->$rt);
+		foreach ($data->result() as $d) {
+
+			$sheet->setCellValue('A' .$baris,$x);
+			$sheet->setCellValue('B' .$baris,$d->id_pelanggan);
+			$sheet->setCellValue('C' .$baris,$d->nama_pelanggan);
+			$sheet->setCellValue('D' .$baris,$d->desa.', '.$d->kecamatan);
+			$sheet->setCellValue('E' .$baris,$d->kategori);
+			$sheet->setCellValue('F' .$baris,$d->rt.', '.$d->rw);
+			$sheet->setCellValue('G' .$baris,$d->meter_pertama.' kubik');
+			$sheet->setCellValue('H' .$baris,$d->tggl_pemasangan);
+			$sheet->setCellValue('I' .$baris,$d->tahun_pemasangan);
 
 			$x++;
 			$baris++;
 		}
 
-		$fileName= "Data-Pelanggan".date("d-m-Y-H-i-s").'xlsx';
+		
 
-		$objPHPExcel->getActiveSheet()->setTitle("Data Pelanggan");
+		$fileName= "Data-Pelanggan ".$tahun."/".date("d-m-Y-H-i-s");
+		header('Content-Type: application/vnd.ms-excel');
+		header('Content-Disposition: attachment;filename="'.$fileName.'"');
 
-		header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-		header('Content-Disposition: attachment;filename"'.$fileName.'"');
-		header('Cache-Control: max-age-0');
+		$writer = new Xlsx($spreadsheet);
+		$writer->save("php://output");
+	}
+	//function for data pembayaran
+	public function export_excell2($tahun){
 
-		$writer=PHPExcel_IOFactory::createWriter($objPHPExcel,'Excel2007');
-		$writer->save('php://output');
+		$data= $this->M_Pelanggan->report_excell2($tahun);
 
-		exit;
+		$spreadsheet = new Spreadsheet();
+		$sheet = $spreadsheet->getActiveSheet();
 
-		// $this->load->view('admin/partial/admin_header');
-		// $this->load->view('admin/partial/sidebar', $data);
-		// $this->load->view('admin/pelaporan',$data);
-		// $this->load->view('admin/partial/admin_footer');
+		$sheet->setCellValue('A1', 'No');
+		$sheet->setCellValue('B1', 'Nomor Kartu');
+		$sheet->setCellValue('C1', 'Nama Pengguna');
+		$sheet->setCellValue('D1', 'Alamat');
+		$sheet->setCellValue('E1', 'Kategori');
+		$sheet->setCellValue('F1', 'BEBAN PEMAKAIAN');
+		$sheet->setCellValue('G1', 'TOTAL TAGIHAN');
+		$sheet->setCellValue('H1', 'BAYAR');
+		$sheet->setCellValue('I1', 'BULAN');
+		$sheet->setCellValue('J1', 'TAHUN');
+
+		$baris=2;
+		$x=1;
+
+		foreach ($data->result() as $d) {
+
+			$sheet->setCellValue('A' .$baris,$x);
+			$sheet->setCellValue('B' .$baris,$d->id_pelanggan);
+			$sheet->setCellValue('C' .$baris,$d->nama_pelanggan);
+			$sheet->setCellValue('D' .$baris,$d->desa.', '.$d->kecamatan);
+			$sheet->setCellValue('E' .$baris,$d->kategori);
+			$sheet->setCellValue('F' .$baris,$d->beban);
+			$sheet->setCellValue('G' .$baris,$d->total_tagihan);
+			$sheet->setCellValue('H' .$baris,$d->bayar);
+			$sheet->setCellValue('I' .$baris,$d->bulan);
+			$sheet->setCellValue('J' .$baris,$d->tahun);
+
+			$x++;
+			$baris++;
+		}
+
+		
+
+		$fileName= "Data-Pembayaran ".$tahun."/".date("d-m-Y-H-i-s");
+		header('Content-Type: application/vnd.ms-excel');
+		header('Content-Disposition: attachment;filename="'.$fileName.'"');
+
+		$writer = new Xlsx($spreadsheet);
+		$writer->save("php://output");
 	}
 }
