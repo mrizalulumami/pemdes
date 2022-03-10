@@ -1,33 +1,33 @@
 <main class="app-content">
         <h4>Kartu Pelanggan PAMDES</h4>
+        
+		<form action="<?php echo base_url('admin/pembayaran');?>" method="POST">
         <div class="row mb-2">
-            <div class="btn-group">
-                <button type="button" class="btn btn-suci dropdown-toggle" data-toggle="dropdown"
-                    aria-expanded="false">
-                    Pilih Tahun
-                </button>
-                <div class="dropdown-menu">
-                    <a class="dropdown-item red" href="#"><b>2018</b></a>
-                    <a class="dropdown-item red" href="#"><b>2019</b></a>
-                    <a class="dropdown-item red" href="#"><b>2020</b></a>
-                    <a class="dropdown-item red" href="#"><b>2021</b></a>
-                    <a class="dropdown-item red" href="#"><b>2022</b></a>
-                </div>
-            </div>
+            <div class="form-group tb-point">
+				<div class="input-group mb-3">
+					<select class="custom-select" name="tahun-search" id="tahun-search">
+                        <option value="0" selected>Semua</option>
+                        <?php
+                        foreach ($tahun->result_array() as $dat):
+                        ?>
+                            <option value="<?= $dat['tahun'];?>"><?= $dat['tahun'];?></option>
+                        <?php endforeach; ?>
+					</select>
+				</div>
+			</div>
             <div class="col-md-7">
-               
-				<form action="<?php echo base_url('admin/pembayaran');?>" method="POST">
                 <div class="input-group mb-3">
-                    <input type="text" id="form_search" name="form_search" class="form-control" placeholder="Masukan nomor kartu pelanggan"
+                    <input type="text" id="form_search" name="form_search" class="form-control penci" placeholder="Masukan nomor kartu pelanggan"
                         aria-label="Masukan nomor pelanggan" aria-describedby="button-addon2">
                     <div class="input-group-append">
                         <button class="btn btn-outline-suci" type="submit" id="button-addon2">Akses Kartu</button>
                     </div>
                 </div>
-				</form>
+				
             </div>
+        </form>
             <div class="col-md-3">
-                <a href="tambah-pelanggan.html" class="btn btn-suci"><i class="fa fa-plus"></i>Data Beban Pengguna</a>
+                <a href="#bayar-modal" class="btn btn-suci"><i class="fa fa-plus"></i>Data Beban Pengguna</a>
             </div>
         </div>
         <div class="row">
@@ -55,44 +55,38 @@
 							<?php
 									
 									foreach ($pelanggan->result_array() as $a):
-										// $id_pelanggan=$a['id_pelanggan'];
-										// $nama_pelanggan=$a['nama_pelanggan'];
-										// $desa=$a['desa'];
-										// $kecamatan=$a['kecamatan'];
-										// $kategori=$a['kategori'];
-										// $rt=$a['rt'];
-										// $rw=$a['rw'];
-										// $tggl_pemasangan=$a['tggl_pemasangan'];
 								?>
                                 <tr>
-                                    <td><?= $a['id_pelanggan'];?></td>
-                                    <td><?= $a['nama_pelanggan'];?></td>
-                                    <td><?= $a['bulan'];?></td>
-                                    <td><?= $a['tahun'];?></td>
-                                    <td><?= $a['beban'];?>/m<sup>3</sup></td>
-                                    <!-- total tagihan bulan ini -->
-                                    <td>Rp. <?= ($a['beban'])*$perkubik;?></td>
-                                    <!-- variabel total -->
-                                    <?php $total=($a['beban'])*$perkubik;
-                                    ?>
-                                    <td>Rp. <?=$a['bayar'];?></td>
-                                    <!-- penentuan status -->
-                                    <td>
+                                <td><?= $a['id_pelanggan']; ?></td>
+                                <td><?= $a['nama_pelanggan']; ?></td>
+                                <td><?= $a['bulan']; ?></td>
+                                <td><?= $a['tahun']; ?></td>
+                                <td><?= $a['beban']; ?>/m<sup>3</sup></td>
+                                <!-- total tagihan bulan ini -->
+                                <td>Rp. <?= $a['total_tagihan']; ?></td>
+                                <td>Rp. <?= $a['bayar']; ?></td>
+                                <!-- penentuan status -->
+                                <td>
                                     <?php
-                                    if($total == $a['bayar']){
-                                        echo '<p style="color:#55ff00;">Lunas</p>';
-                                    }
-                                    else if($a['bayar'] < $total){
-                                        echo '<p style = "color: #ff0000;">Belum Lunas</p>';
-                                    }
-                                    else{
-                                        echo '<p style = "color: #ff0000;">Belum Lunas</p>';
-                                    }?></td>
-                                    <td>
-                                        <button <?= $a['bayar'] == $total ? 'class="btn btn-light ml-auto disabled"' : 'class="btn btn-light ml-auto"' ?> id="cetakstruk" type="button" >Bayar</button>
-                                        |
-                                        <a <?= $a['bayar'] == $total ? 'class="btn btn-light ml-auto"' : 'class="btn btn-light ml-auto disabled"' ?> id="cetakstruk" href="<?= base_url('admin/printpdf/') . $a['id_pembayaran']; ?>" type="button" >Cetak Struck</a>
-                                    </td>
+										if ($a['total_tagihan'] == $a['bayar']) {
+											echo '<p style="color:#55ff00;">Lunas</p>';
+										} else if ($a['bayar'] < $a['total_tagihan']) {
+											echo '<p style = "color: #ff0000;">Belum Lunas</p>';
+										} else {
+											echo '<p style = "color: #ff0000;">Belum Lunas</p>';
+										} ?></td>
+                                <td>
+                                    <a <?= $a['bayar'] == $a['total_tagihan'] ? 'class="btn btn-light ml-auto disabled"' : 'class="btn btn-light ml-auto"' ?> href="#acc-bayar-modal<?= $a['id_pembayaran']; ?>"><i class="fa-solid fa-money-check-dollar"
+                                                style="color: green"></i>
+                                    </a>
+                                    <a <?= $a['bayar'] == $a['total_tagihan'] ? 'class="btn btn-light ml-auto"' : 'class="btn btn-light ml-auto disabled"' ?>
+                                        id=" cetakstruk"
+                                        href="<?= base_url('admin/printpdf/') . $a['id_pembayaran']; ?>"
+                                        type="button"><i class="fa-solid fa-print"></i></a>
+                                    <a href="#modal-del_pembayaran<?= $a['id_pembayaran']; ?>"
+                                        class="btn btn-light ml-auto" type="button"><i class="fas fa-trash-alt"
+                                            style="color: red"></i></a>
+                                </td>
                                 </tr>
 								<?php endforeach;?>
                             </tbody>
@@ -100,10 +94,9 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-12 d-flex ">
+            <!-- <div class="col-md-12 d-flex ">
                 <button type="button" class="btn btn-light ml-auto disabled">Cetak Total Struck</button>
-                <!-- <a href="#demo-modal" type="button" class="btn btn-light ml-2">konfirmasi Pembayaran</a> -->
-            </div>
+            </div> -->
             <!-- modal -->
             <div id="demo-modal" class="modal">
                 <div class="modal__content">
@@ -145,3 +138,4 @@
             <!-- end Modal -->
         </div>
     </main>
+    

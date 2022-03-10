@@ -81,8 +81,8 @@
                                 foreach ($laporan_pembayaran->result_array() as $a) :
                                 ?>
                                     <tr>
-                                        <td>Data Pelanggan <?= $a['tahun']; ?></td>
-                                        <td>Berisi data pelanggan PAMDES Pringgasela tahun <?= $a['tahun']; ?></td>
+                                        <td>Data pembayaran <?= $a['tahun']; ?></td>
+                                        <td>Berisi data pembayaran PAMDES Pringgasela tahun <?= $a['tahun']; ?></td>
                                         <td><?= $a['total']; ?> Data</td>
                                         <td>Dimodifikasi pada tahun <?= $a['tahun']; ?></td>
                                         <td>

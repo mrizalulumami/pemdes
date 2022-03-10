@@ -53,14 +53,13 @@ class M_Pelanggan extends CI_Model{
 		}
 		
 	}
-	// public function pelaporan2(){
-	// 	// $hsl=$this->db->query("SELECT * FROM laporan");
-	// 	$hsl=$this->db->query("SELECT tahun, COUNT(tahun_pemasangan) AS total
-	// 	FROM pelanggan
-	// 	GROUP BY tahun;");
-	// 	return $hsl;
+	public function tahun_pembayaran(){
+		$hsl=$this->db->query("SELECT tahun, COUNT(tahun) AS total
+			FROM pembayaran
+			GROUP BY tahun");
+			return $hsl;
 		
-	// }
+	}
 	public function report_pdf($id_pembayaran){
 
 		$query="SELECT `pembayaran`.*, `pelanggan`.`nama_pelanggan`
@@ -81,17 +80,55 @@ class M_Pelanggan extends CI_Model{
 		}
 		
 	}
-	public function tampil_pembayaran($id_pelanggan){
+	public function hapus_data_pembayaran($table_name, $id)
+	{
+		$this->db->where('id_pembayaran', $id);
+		$hapus = $this->db->delete($table_name);
+		return $hapus;
+	}
 
-		if(!$id_pelanggan == null){
+	public function tampil_bayar_index()
+	{
+		$hsl = $this->db->query("SELECT * FROM pembayaran, pelanggan 
+		WHERE `pelanggan`.`id_pelanggan`=`pembayaran`.`id_pelanggan` AND `pembayaran`.`bayar` != '0' ORDER BY `pembayaran`.`create_at` DESC");
+		return $hsl;
+	}
+	public function pelanggan_find(){
+		$hsl=$this->db->query("SELECT * FROM pelanggan");
+		return $hsl;
+		
+	}
+	public function tampil_pembayaran($id_pelanggan,$tahun_search){
+
+		if(!$id_pelanggan == null && !$tahun_search == null){
 			$query="SELECT `pembayaran`.*, `pelanggan`.`nama_pelanggan`
 			FROM `pembayaran` JOIN `pelanggan`
-			ON `pembayaran`.`id_pelanggan` = `pelanggan`.`id_pelanggan` where `pembayaran`.`id_pelanggan`='$id_pelanggan' OR `pelanggan`.`id_pelanggan`='$id_pelanggan'";
+			ON `pembayaran`.`id_pelanggan` = `pelanggan`.`id_pelanggan`
+			where `pembayaran`.`id_pelanggan`='$id_pelanggan' AND `pembayaran`.`tahun`= '$tahun_search'";
 		
 			// $hsl=$this->db->query("SELECT * FROM pembayaran, pelanggan WHERE `pelanggan`.`id_pelanggan`=`pembayaran`.`id_pelanggan` OR `pelanggan`.`id_pelanggan`='$id_pelanggan' OR `pembayaran`.`id_pelanggan`='$id_pelanggan'");
 			$hsl=$this->db->query($query);
 			return $hsl;
-		}else{
+		}else if(!$id_pelanggan == null){
+			$query="SELECT `pembayaran`.*, `pelanggan`.`nama_pelanggan`
+			FROM `pembayaran` JOIN `pelanggan`
+			ON `pembayaran`.`id_pelanggan` = `pelanggan`.`id_pelanggan`
+			where `pembayaran`.`id_pelanggan`='$id_pelanggan'";
+		
+			// $hsl=$this->db->query("SELECT * FROM pembayaran, pelanggan WHERE `pelanggan`.`id_pelanggan`=`pembayaran`.`id_pelanggan` OR `pelanggan`.`id_pelanggan`='$id_pelanggan' OR `pembayaran`.`id_pelanggan`='$id_pelanggan'");
+			$hsl=$this->db->query($query);
+			return $hsl;
+		}else if(!$tahun_search == null){
+			$query="SELECT `pembayaran`.*, `pelanggan`.`nama_pelanggan`
+			FROM `pembayaran` JOIN `pelanggan`
+			ON `pembayaran`.`id_pelanggan` = `pelanggan`.`id_pelanggan`
+			where `pembayaran`.`tahun`= '$tahun_search'";
+		
+			// $hsl=$this->db->query("SELECT * FROM pembayaran, pelanggan WHERE `pelanggan`.`id_pelanggan`=`pembayaran`.`id_pelanggan` OR `pelanggan`.`id_pelanggan`='$id_pelanggan' OR `pembayaran`.`id_pelanggan`='$id_pelanggan'");
+			$hsl=$this->db->query($query);
+			return $hsl;
+		}
+		else{
 			$hsl=$this->db->query("SELECT * FROM pembayaran, pelanggan WHERE `pelanggan`.`id_pelanggan`=`pembayaran`.`id_pelanggan`");
 			return $hsl;
 		}
@@ -104,11 +141,32 @@ class M_Pelanggan extends CI_Model{
         $hasil=$this->db->count_all("users");
         return $hasil;
     }
+    public function count_berkas1(){
+        $hasil=$this->db->query("SELECT COUNT(id_pembayaran) AS total
+		FROM pembayaran");
+        return $hasil->result_array(0);
+    }
+    public function count_berkas2(){
+        $hasil=$this->db->query("SELECT COUNT(id_pelanggan) AS total
+		FROM pelanggan");
+        return $hasil->result_array(0);
+    }
+	public function hitung_data_pelanggan_berdasarkan_desa(){
+		$hasil=$this->db->query("SELECT desa,kecamatan,COUNT(id_pelanggan) AS total
+		FROM pelanggan
+		GROUP BY desa");
+		return $hasil->result_array();
+	}
 
 	public function simpan_pelanggan($table_name, $data)
     {
         $this->db->insert($table_name, $data);
     }
+	public function tambah_bebanya($table_name, $data)
+    {
+        $this->db->insert($table_name, $data);
+    }
+	
 	
 	public function hapus_data_pelanggan($table_name, $id)
 	{

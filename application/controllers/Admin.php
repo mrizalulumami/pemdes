@@ -22,6 +22,10 @@ class Admin extends CI_Controller
 		$data['title'] = 'dashboard';
 		$data['j_pelanggan'] = $this->M_Pelanggan->count_pelanggan();
 		$data['j_admin'] = $this->M_Pelanggan->count_admin();
+		$data['pelanggan'] = $this->M_Pelanggan->tampil_bayar_index();
+		$data['berkas1'] = $this->M_Pelanggan->count_berkas1();
+		$data['berkas2'] = $this->M_Pelanggan->count_berkas2();
+		$data['pelanggan_desa'] = $this->M_Pelanggan->hitung_data_pelanggan_berdasarkan_desa();
 
 		$this->load->view('admin/partial/admin_header');
 		$this->load->view('admin/partial/sidebar', $data);
@@ -32,14 +36,18 @@ class Admin extends CI_Controller
 	{
 		$data['title'] = 'pembayaran';
 		$data['perkubik'] = 500;
-		
-
 		$id_pelanggan = $this->input->post('form_search');
-		$data['pelanggan'] = $this->M_Pelanggan->tampil_pembayaran($id_pelanggan);
+		$tahun_search = $this->input->post('tahun-search');
+		$data['pelanggan'] = $this->M_Pelanggan->tampil_pembayaran($id_pelanggan,$tahun_search);
+		$data['pelanggan_woe'] = $this->M_Pelanggan->pelanggan_find();
+		$data['tahun'] = $this->M_Pelanggan->tahun_pembayaran();
 
 		$this->load->view('admin/partial/admin_header');
 		$this->load->view('admin/partial/sidebar', $data);
 		$this->load->view('admin/pembayaran', $data);
+		$this->load->view('admin/partial/modal_pembayaran',$data);
+		$this->load->view('admin/partial/modal_acc_bayar',$data);
+		$this->load->view('admin/partial/modal_delete_pembayaran',$data);
 		$this->load->view('admin/partial/admin_footer');
 	}
 	public function data_pelanggan()
@@ -89,11 +97,33 @@ class Admin extends CI_Controller
 	
 		$this->pdf->setPaper('A4', 'potrait');
 		$this->pdf->filename = "struk_pembayaran.pdf";
-		// $this->pdf->load_view('laporan_pdf', $data);
-		$this->pdf->load_view('report/struk_pdf', $data);
+		$this->pdf->load_view('report/new_struck', $data);
+		// $this->load->view('report/struk_pdf', $data);
 	
 	
 	}
+
+	public function pdf($id_pembayaran)
+    {
+        $this->load->library('dompdf_gen');
+
+		$data['title'] = 'Data Pembayaran';
+		$data['perkubik'] = 500;
+
+        $data['pdf_print'] = $this->M_Pelanggan->report_pdf($id_pembayaran);
+
+        // $this->load->view('laporan_pdf',$data);
+		$this->load->view('report/new_struck', $data);
+
+        $paper_size = 'A4';
+        $orientation = 'landscape';
+        $html        = $this->output->get_output();
+        $this->dompdf->set_paper($paper_size,$orientation);
+
+        $this->dompdf->load_html($html);
+        $this->dompdf->render();
+        $this->dompdf->stream("laporan_data_peminjam.pdf",array('Attachment' =>0));
+    }
 	//function for data pelanggan
 	public function export_excell($tahun){
 
@@ -189,4 +219,29 @@ class Admin extends CI_Controller
 		$writer = new Xlsx($spreadsheet);
 		$writer->save("php://output");
 	}
+	public function acc_pembayaran(){
+
+       
+        $this->form_validation->set_rules('bayar_tagihan', 'Bayar tagihan', 'required|trim');
+
+        if ($this->form_validation->run()) {
+            $id_pembayaran = $_POST['id_pembayaran'];
+            $bayar_tagihan = $_POST['bayar_tagihan'];
+
+			// $id_pembayaran = $this->input->post('id_pembayaran');
+
+            // $tambah = $this->Menu_model->tambahData('data_peminjam', $data);
+            $this->db->set('bayar', $bayar_tagihan);
+            $this->db->where('id_pembayaran', $id_pembayaran);
+            $this->db->update('pembayaran');
+            
+            $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Data diupdate!</div>');
+            redirect(base_url('admin/pembayaran'));
+			// echo 'berhasil';
+           
+        }else{
+            redirect('admin/pembayaran');
+			// echo 'gagal';
+        }
+    }
 }

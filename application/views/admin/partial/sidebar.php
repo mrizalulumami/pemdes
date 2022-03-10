@@ -17,23 +17,19 @@
         <a <?= $title == 'pelaporan' || $title == '' ? 'class="app-menu__item active"' : 'class="app-menu__item"' ?> href="<?=base_url('admin/pelaporan');?>"><i class="app-menu__icon fa-solid fa-book"></i><span
             class="app-menu__label">Pelaporan</span></a>
       </li>
+      
       <li>
-        <a <?= $title == 'ubah sandi' || $title == '' ? 'class="app-menu__item active"' : 'class="app-menu__item"' ?> href="#"><i class="app-menu__icon fa-solid fa-gear"></i><span
-            class="app-menu__label">Ubah
-            Kata Sandi</span></a>
-      </li>
-      <li>
-        <a class="app-menu__item " href="<?=base_url('auth');?>"><i
+        <a class="app-menu__item " href="<?=base_url('auth/logout');?>"><i
             class="app-menu__icon fa-solid fa-arrow-right-from-bracket"></i><span
             class="app-menu__label">keluar</span></a>
       </li>
     </ul>
     <ul class="app-menu marbo">
-      <li>
+      <!-- <li>
         <a onclick="myFunction()" class="app-menu__item " href="#"><i
             class="app-menu__icon fa-solid fa-lightbulb "></i><span class="app-menu__label">Mode
             Gelap</span></a>
-      </li>
+      </li> -->
       <li>
         <span class="app-menu__item" href="#"><i class="app-menu__icon fa-solid fa-copyright copyright"></i><span
             class="app-menu__label copyright">Copyright PAMDES
