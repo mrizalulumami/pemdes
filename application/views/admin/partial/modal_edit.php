@@ -47,22 +47,24 @@ foreach ($pelanggan->result_array() as $a) {
                 </div>
             </div>
             <div class="form-row">
-                <div class="col">
+                <!-- <div class="col">
                     <div class="form-group tb-point">
                         <label for="exampleInputEmail1"><b>Alamat</b></label>
                         <input type="text" name="nama_pelanggan" placeholder="Tulis nama lengkap pelanggan"
                             class="form-control" id="nama_pelanggan" aria-describedby="emailHelp">
                     </div>
-                </div>
+                </div> -->
                 <div class="col">
                     <div class="form-group tb-point">
                         <label for="exampleInputEmail1"><b>RW</b></label>
                         <div class="input-group mb-3">
                             <select class="custom-select" name="rw" id="rw">
                                 <option selected>Pilih RW</option>
-                                <option value="Aik Dewa">Aik Dewa</option>
-                                <option value="Pringgasela">Pringgasela</option>
-                                <option value="Pringgasela Selatan">Pringgasela Selatana</option>
+                                <?php
+                                    foreach ($menu_rw as $d) :
+                                ?>
+                                <option value="<?= $d['alamat'];?>"><?= $d['alamat'];?></option>
+                                <?php endforeach;?>
                             </select>
                         </div>
                     </div>
@@ -73,9 +75,11 @@ foreach ($pelanggan->result_array() as $a) {
                         <div class="input-group mb-3">
                             <select class="custom-select" name="desa" id="desa">
                                 <option selected><?= $a['desa'] ?></option>
-                                <option value="Aik Dewa">Aik Dewa</option>
-                                <option value="Pringgasela">Pringgasela</option>
-                                <option value="Pringgasela Selatan">Pringgasela Selatana</option>
+                                <?php
+                                    foreach ($menu_desa as $d) :
+                                ?>
+                                <option value="<?= $d['desa'];?>"><?= $d['desa'];?></option>
+                                <?php endforeach;?>
                             </select>
                         </div>
                     </div>
@@ -86,7 +90,11 @@ foreach ($pelanggan->result_array() as $a) {
                         <div class="input-group mb-3">
                             <select class="custom-select" name="kecamatan" id="kecamatan">
                                 <option selected><?= $a['kecamatan'] ?></option>
-                                <option value="Pringgasela">Pringgasela</option>
+                                <?php
+                                    foreach ($menu_kecamatan as $d) :
+                                ?>
+                                <option value="<?= $d['kecamatan'];?>"><?= $d['kecamatan'];?></option>
+                                <?php endforeach;?>
                             </select>
                         </div>
                     </div>
@@ -96,15 +104,7 @@ foreach ($pelanggan->result_array() as $a) {
                 <div class="col">
                     <div class="form-group tb-point ml-auto">
                         <label><b>Kategori</b></label>
-                        <input readonly type="text" name="kategori" value="<?php if ($a['kategori'] == 'std') {
-																					echo 'Standar';
-																				} elseif ($a['kategori'] == 'kms') {
-																					echo 'Keluarga Miskin';
-																				} elseif ($a['kategori'] == 'ins') {
-																					echo 'Dinas / Instansi';
-																				} elseif ($a['kategori'] == 'msj') {
-																					echo 'Mushola / Masjid';
-																				} ?>" class="form-control" id="kategori" aria-describedby="emailHelp">
+                        <input readonly type="text" name="kategori" value="<?=$a['kategori']?>" class="form-control" id="kategori" aria-describedby="emailHelp">
                     </div>
                 </div>
                 <div class="col">

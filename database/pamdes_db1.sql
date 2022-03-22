@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 22, 2022 at 12:02 PM
+-- Generation Time: Mar 16, 2022 at 12:30 PM
 -- Server version: 10.4.19-MariaDB
 -- PHP Version: 7.4.20
 
@@ -151,7 +151,8 @@ CREATE TABLE `pelanggan` (
   `j_kelamin` varchar(1) NOT NULL,
   `desa` text NOT NULL,
   `kecamatan` text NOT NULL,
-  `rw` text NOT NULL,
+  `rt` int(3) NOT NULL,
+  `rw` int(3) NOT NULL,
   `kategori` varchar(5) NOT NULL,
   `tggl_pemasangan` date NOT NULL,
   `tahun_pemasangan` year(4) NOT NULL DEFAULT current_timestamp(),
@@ -163,8 +164,8 @@ CREATE TABLE `pelanggan` (
 -- Dumping data for table `pelanggan`
 --
 
-INSERT INTO `pelanggan` (`id_pelanggan`, `nama_pelanggan`, `j_kelamin`, `desa`, `kecamatan`, `rw`, `kategori`, `tggl_pemasangan`, `tahun_pemasangan`, `create_at`, `update_at`) VALUES
-('PMD-01', 'Muhammad Wasil', 'L', 'Pringgasela', 'Pringgasela', 'RW RAPI', 'Rumah', '2022-03-18', 2022, '2022-03-18 18:29:41', '2022-03-18 18:29:41');
+INSERT INTO `pelanggan` (`id_pelanggan`, `nama_pelanggan`, `j_kelamin`, `desa`, `kecamatan`, `rt`, `rw`, `kategori`, `tggl_pemasangan`, `tahun_pemasangan`, `create_at`, `update_at`) VALUES
+('PMD-02', 'Muhammad Wasil', 'L', 'Pringgasela', 'Kecamatan Pringgasela', 2, 3, 'std', '2018-02-26', 2018, '2022-02-28 12:11:50', '2022-03-10 14:15:04');
 
 -- --------------------------------------------------------
 
@@ -183,7 +184,7 @@ CREATE TABLE `pembayaran` (
   `id_petugas` int(5) DEFAULT NULL,
   `total_tagihan` int(10) DEFAULT NULL,
   `bayar` int(6) NOT NULL,
-  `create_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `create_at` datetime NOT NULL,
   `update_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -192,8 +193,9 @@ CREATE TABLE `pembayaran` (
 --
 
 INSERT INTO `pembayaran` (`id_pembayaran`, `id_pelanggan`, `tahun`, `bulan`, `meter_awal`, `meter_akhir`, `pemakaian`, `id_petugas`, `total_tagihan`, `bayar`, `create_at`, `update_at`) VALUES
-(18, 'PMD-01', 2022, 'Januari', 0, 10, 10, NULL, 7000, 8000, '0000-00-00 00:00:00', '2022-03-18 18:30:40'),
-(20, 'PMD-01', 2022, 'Februari', 10, 20, 10, 2, 7000, 7000, '2022-03-22 12:29:37', '2022-03-22 12:30:45');
+(12, 'PMD-02', 2022, 'Januari', 0, 10, 10, NULL, 5000, 5000, '0000-00-00 00:00:00', '2022-03-16 14:55:43'),
+(13, 'PMD-02', 2022, 'Februari', 10, 30, 20, NULL, 10000, 10000, '0000-00-00 00:00:00', '2022-03-16 14:56:32'),
+(14, 'PMD-02', 2022, 'Maret', 30, 40, 10, NULL, 5000, 0, '0000-00-00 00:00:00', '2022-03-16 16:18:26');
 
 -- --------------------------------------------------------
 
@@ -216,7 +218,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id_petugas`, `nama_petugas`, `username`, `password`, `is_active`, `create_at`, `update_at`) VALUES
-(1, 'Muhammad Wasil', 'admin', '$2y$10$idHJ6UpKNn1kBiV5MSejc.4p/NUzYXlbLUBPzvWB4VcOqqC9DrObi', 1, '2022-03-22 16:15:23', '2022-03-22 16:28:12');
+(2, 'Wasil', 'admin', '$2y$10$neBEvKpL4Xk9OM5jd0UvHuKqggei8mpzce7cLXPVxkmGQ7Wqz.Dri', 1, '2022-02-24 13:15:25', '2022-02-24 13:16:07');
 
 --
 -- Indexes for dumped tables
@@ -278,19 +280,19 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `form_desa`
 --
 ALTER TABLE `form_desa`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `form_kecamatan`
 --
 ALTER TABLE `form_kecamatan`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `form_rw`
 --
 ALTER TABLE `form_rw`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `kategori`
@@ -308,13 +310,13 @@ ALTER TABLE `menu_pembayaran`
 -- AUTO_INCREMENT for table `pembayaran`
 --
 ALTER TABLE `pembayaran`
-  MODIFY `id_pembayaran` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id_pembayaran` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id_petugas` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_petugas` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -27,7 +27,7 @@
             </div>
         </form>
             <div class="col-md-3">
-                <a href="#bayar-modal" class="btn btn-suci"><i class="fa fa-plus"></i>Data Beban Pengguna</a>
+                <a href="#bayar-modal" class="btn btn-suci"><i class="fa fa-plus"></i>Data Pemakaian Pengguna</a>
             </div>
         </div>
         <div class="row">
@@ -76,15 +76,17 @@
 											echo '<p style="color:#55ff00;">Lunas</p>';
 										} else if ($a['bayar'] < $a['total_tagihan']) {
 											echo '<p style = "color: #ff0000;">Belum Lunas</p>';
-										} else {
+										} else if ($a['bayar'] > $a['total_tagihan']) {
+											echo '<p style="color:#55ff00;">Lunas</p>';
+										}else {
 											echo '<p style = "color: #ff0000;">Belum Lunas</p>';
 										} ?></td>
                                 <td>
                                    <center>
-                                            <a <?= $a['bayar'] == $a['total_tagihan'] ? 'class="btn btn-light ml-auto disabled"' : 'class="btn btn-light ml-auto"' ?> href="#acc-bayar-modal<?= $a['id_pembayaran']; ?>"><i class="fa-solid fa-money-check-dollar"
+                                            <a <?= $a['bayar'] == $a['total_tagihan'] | $a['bayar'] >= $a['total_tagihan'] ? 'class="btn btn-light ml-auto disabled"' : 'class="btn btn-light ml-auto"' ?> href="#acc-bayar-modal<?= $a['id_pembayaran']; ?>"><i class="fa-solid fa-money-check-dollar"
                                                             style="color: green"></i>
                                                 </a>
-                                                <a <?= $a['bayar'] == $a['total_tagihan'] ? 'class="btn btn-light ml-auto"' : 'class="btn btn-light ml-auto disabled"' ?>
+                                                <a <?= $a['bayar'] == $a['total_tagihan'] | $a['bayar'] >= $a['total_tagihan'] ? 'class="btn btn-light ml-auto"' : 'class="btn btn-light ml-auto disabled"' ?>
                                                     id=" cetakstruk"
                                                     href="<?= base_url('admin/printpdf/') . $a['id_pembayaran']; ?>"
                                                     type="button"><i class="fa-solid fa-print"></i></a>

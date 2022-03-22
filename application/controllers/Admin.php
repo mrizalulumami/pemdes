@@ -15,11 +15,15 @@ class Admin extends CI_Controller
 		is_login();
 		$this->load->library('form_validation');
 		$this->load->model('M_Pelanggan');
+		$this->load->model('M_Menu');
+		$this->load->library('encryption');
 	}
 
 	public function index()
 	{
 		$data['title'] = 'dashboard';
+		
+
 		$data['j_pelanggan'] = $this->M_Pelanggan->count_pelanggan();
 		$data['j_admin'] = $this->M_Pelanggan->count_admin();
 		$data['pelanggan'] = $this->M_Pelanggan->tampil_bayar_index();
@@ -35,12 +39,16 @@ class Admin extends CI_Controller
 	public function pembayaran()
 	{
 		$data['title'] = 'pembayaran';
+
+
 		$data['perkubik'] = 500;
 		$id_pelanggan = $this->input->post('form_search');
 		$tahun_search = $this->input->post('tahun-search');
+
 		$data['pelanggan'] = $this->M_Pelanggan->tampil_pembayaran($id_pelanggan,$tahun_search);
 		$data['pelanggan_woe'] = $this->M_Pelanggan->pelanggan_find();
 		$data['tahun'] = $this->M_Pelanggan->tahun_pembayaran();
+		$data['menu_we'] = $this->M_Menu->menu_pembayaran();
 
 		$this->load->view('admin/partial/admin_header');
 		$this->load->view('admin/partial/sidebar', $data);
@@ -54,18 +62,41 @@ class Admin extends CI_Controller
 	{
 		$data['title'] = 'menu';
 
+		$data['menu_we'] = $this->M_Menu->menu_pembayaran();
+		$data['menu_rw'] = $this->M_Menu->data_rw();
+		$data['menu_kecamatan'] = $this->M_Menu->data_kecamatan();
+		$data['menu_desa'] = $this->M_Menu->data_desa();
+		$data['menu_ktg'] = $this->M_Menu->data_kategori();
+
 		$this->load->view('admin/partial/admin_header');
 		$this->load->view('admin/partial/sidebar', $data);
-		$this->load->view('admin/kelola_menu');
+		$this->load->view('admin/partial/modal_delete_desa',$data);
+		$this->load->view('admin/partial/modal_delete_kecamatan',$data);
+		$this->load->view('admin/partial/modal_delete_rw',$data);
+		$this->load->view('admin/partial/modal_edit_air',$data);
+		$this->load->view('admin/partial/modal_edit_beban',$data);
+		$this->load->view('admin/partial/modal_edit_pma',$data);
+		$this->load->view('admin/partial/modal_edit_rw',$data);
+		$this->load->view('admin/partial/modal_edit_desa',$data);
+		$this->load->view('admin/partial/modal_edit_kecamatan',$data);
+		$this->load->view('admin/partial/modal_tambah_rw',$data);
+		$this->load->view('admin/partial/modal_tambah_desa',$data);
+		$this->load->view('admin/partial/modal_tambah_kecamatan',$data);
+		$this->load->view('admin/kelola_menu',$data);
 		$this->load->view('admin/partial/admin_footer');
 	}
 	public function profile()
 	{
 		$data['title'] = 'profile';
-		
+
+		$data['user'] = $this->db->get_where('users', ['id_petugas' =>
+        $this->session->userdata('id_petugas')])->result_array();
+		// $password = $this->session->userdata('password');
+		// $test[data] = $this->encryption->decrypt($password);
+
 		$this->load->view('admin/partial/admin_header');
 		$this->load->view('admin/partial/sidebar', $data);
-		$this->load->view('admin/profile_admin');
+		$this->load->view('admin/profile_admin',$data);
 		$this->load->view('admin/partial/admin_footer');
 	}
 	public function data_pelanggan()
@@ -76,13 +107,18 @@ class Admin extends CI_Controller
 		$keyword = $this->input->post('keyword');
 		$data['pelanggan'] = $this->M_Pelanggan->tampil_pelanggan($keyword);
 		
-		$kdunik['kodeunik'] = $this->M_Pelanggan->buat_kode();
+		$data['kodeunik'] = $this->M_Pelanggan->buat_kode();
+
+		$data['menu_rw'] = $this->M_Menu->data_rw();
+		$data['menu_kecamatan'] = $this->M_Menu->data_kecamatan();
+		$data['menu_desa'] = $this->M_Menu->data_desa();
+		$data['menu_ktg'] = $this->M_Menu->data_kategori();
 
 		$this->load->view('admin/partial/admin_header');
 		$this->load->view('admin/partial/sidebar', $titdata);
 		$this->load->view('admin/data_pelanggan', $data);
-		$this->load->view('admin/partial/modal_tambah', $kdunik);
-		$this->load->view('admin/partial/modal_edit', $kdunik);
+		$this->load->view('admin/partial/modal_tambah', $data);
+		$this->load->view('admin/partial/modal_edit', $data);
 		$this->load->view('admin/partial/modal_delete');
 		$this->load->view('admin/partial/pelanggan_footer');
 	}
@@ -156,10 +192,9 @@ class Admin extends CI_Controller
 		$sheet->setCellValue('C1', 'Nama Pengguna');
 		$sheet->setCellValue('D1', 'Alamat');
 		$sheet->setCellValue('E1', 'Kategori');
-		$sheet->setCellValue('F1', 'RT/RW');
-		$sheet->setCellValue('G1', 'METER PERTAMA');
-		$sheet->setCellValue('H1', 'TANGGAL pemasangan');
-		$sheet->setCellValue('I1', 'TANGGAL pemasangan');
+		$sheet->setCellValue('F1', 'RW');
+		$sheet->setCellValue('G1', 'Tanggal Pemasangan');
+		$sheet->setCellValue('H1', 'Tahun Pemasangan');
 
 		$baris=2;
 		$x=1;
@@ -171,10 +206,9 @@ class Admin extends CI_Controller
 			$sheet->setCellValue('C' .$baris,$d->nama_pelanggan);
 			$sheet->setCellValue('D' .$baris,$d->desa.', '.$d->kecamatan);
 			$sheet->setCellValue('E' .$baris,$d->kategori);
-			$sheet->setCellValue('F' .$baris,$d->rt.', '.$d->rw);
-			$sheet->setCellValue('G' .$baris,$d->meter_pertama.' kubik');
-			$sheet->setCellValue('H' .$baris,$d->tggl_pemasangan);
-			$sheet->setCellValue('I' .$baris,$d->tahun_pemasangan);
+			$sheet->setCellValue('F' .$baris,$d->rw);
+			$sheet->setCellValue('G' .$baris,$d->tggl_pemasangan);
+			$sheet->setCellValue('H' .$baris,$d->tahun_pemasangan);
 
 			$x++;
 			$baris++;
@@ -182,7 +216,7 @@ class Admin extends CI_Controller
 
 		
 
-		$fileName= "Data-Pelanggan ".$tahun."/".date("d-m-Y-H-i-s");
+		$fileName= "Data Pelanggan ".$tahun." ".date("d-m-Y-H-i-s").".xls";
 		header('Content-Type: application/vnd.ms-excel');
 		header('Content-Disposition: attachment;filename="'.$fileName.'"');
 
@@ -190,25 +224,29 @@ class Admin extends CI_Controller
 		$writer->save("php://output");
 	}
 	//function for data pembayaran
-	public function export_excell2($tahun){
+	public function export_excell2($bulan){
 
-		$data= $this->M_Pelanggan->report_excell2($tahun);
+		$data= $this->M_Pelanggan->report_excell2($bulan);
 
 		$spreadsheet = new Spreadsheet();
 		$sheet = $spreadsheet->getActiveSheet();
 
-		$sheet->setCellValue('A1', 'No');
-		$sheet->setCellValue('B1', 'Nomor Kartu');
-		$sheet->setCellValue('C1', 'Nama Pengguna');
-		$sheet->setCellValue('D1', 'Alamat');
-		$sheet->setCellValue('E1', 'Kategori');
-		$sheet->setCellValue('F1', 'BEBAN PEMAKAIAN');
-		$sheet->setCellValue('G1', 'TOTAL TAGIHAN');
-		$sheet->setCellValue('H1', 'BAYAR');
-		$sheet->setCellValue('I1', 'BULAN');
-		$sheet->setCellValue('J1', 'TAHUN');
+		$sheet->setCellValue('A2', 'Data Pembayaran Untuk Bulan '.$bulan);
+		$sheet->setCellValue('A4', 'No');
+		$sheet->setCellValue('B4', 'Nomor Pelanggan');
+		$sheet->setCellValue('C4', 'Nama Pengguna');
+		$sheet->setCellValue('D4', 'RW');
+		$sheet->setCellValue('E4', 'Alamat');
+		$sheet->setCellValue('F4', 'Kategori');
+		$sheet->setCellValue('G4', 'Meter Awal');
+		$sheet->setCellValue('H4', 'Meter Akhir');
+		$sheet->setCellValue('I4', 'Beban Pemakaian');
+		$sheet->setCellValue('J4', 'Total Tagihan');
+		$sheet->setCellValue('K4', 'Dibayar');
+		$sheet->setCellValue('L4', 'Bulan');
+		$sheet->setCellValue('M4', 'Tahun');
 
-		$baris=2;
+		$baris=5;
 		$x=1;
 
 		foreach ($data->result() as $d) {
@@ -216,13 +254,16 @@ class Admin extends CI_Controller
 			$sheet->setCellValue('A' .$baris,$x);
 			$sheet->setCellValue('B' .$baris,$d->id_pelanggan);
 			$sheet->setCellValue('C' .$baris,$d->nama_pelanggan);
-			$sheet->setCellValue('D' .$baris,$d->desa.', '.$d->kecamatan);
-			$sheet->setCellValue('E' .$baris,$d->kategori);
-			$sheet->setCellValue('F' .$baris,$d->pemakaian);
-			$sheet->setCellValue('G' .$baris,$d->total_tagihan);
-			$sheet->setCellValue('H' .$baris,$d->bayar);
-			$sheet->setCellValue('I' .$baris,$d->bulan);
-			$sheet->setCellValue('J' .$baris,$d->tahun);
+			$sheet->setCellValue('D' .$baris,$d->rw);
+			$sheet->setCellValue('E' .$baris,$d->desa.', '.$d->kecamatan);
+			$sheet->setCellValue('F' .$baris,$d->kategori);
+			$sheet->setCellValue('G' .$baris,$d->meter_awal);
+			$sheet->setCellValue('H' .$baris,$d->meter_akhir);
+			$sheet->setCellValue('I' .$baris,$d->pemakaian);
+			$sheet->setCellValue('J' .$baris,$d->total_tagihan);
+			$sheet->setCellValue('K' .$baris,$d->bayar);
+			$sheet->setCellValue('L' .$baris,$d->bulan);
+			$sheet->setCellValue('M' .$baris,$d->tahun);
 
 			$x++;
 			$baris++;
@@ -230,7 +271,7 @@ class Admin extends CI_Controller
 
 		
 
-		$fileName= "Data-Pembayaran ".$tahun."/".date("d-m-Y-H-i-s");
+		$fileName= "Data Pembayaran Bulan ".$bulan." ".date("d-m-Y-H-i-s").".xls";
 		header('Content-Type: application/vnd.ms-excel');
 		header('Content-Disposition: attachment;filename="'.$fileName.'"');
 
@@ -238,8 +279,9 @@ class Admin extends CI_Controller
 		$writer->save("php://output");
 	}
 	public function acc_pembayaran(){
+		
+		$id_user = $this->session->userdata('id_petugas');
 
-       
         $this->form_validation->set_rules('bayar_tagihan', 'Bayar tagihan', 'required|trim');
 
         if ($this->form_validation->run()) {
@@ -250,6 +292,7 @@ class Admin extends CI_Controller
 
             // $tambah = $this->Menu_model->tambahData('data_peminjam', $data);
             $this->db->set('bayar', $bayar_tagihan);
+            $this->db->set('id_petugas', $id_user);
             $this->db->where('id_pembayaran', $id_pembayaran);
             $this->db->update('pembayaran');
             

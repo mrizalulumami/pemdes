@@ -70,10 +70,8 @@ class Pelanggan extends CI_Controller {
         $this->form_validation->set_rules('j_kelamin', 'Jenis Kelamin', 'required|trim');
         $this->form_validation->set_rules('desa', 'Desa', 'required|trim');
         $this->form_validation->set_rules('kecamatan', 'Kecamatan', 'required|trim');
-        $this->form_validation->set_rules('rt', 'RT', 'required|trim');
         $this->form_validation->set_rules('rw', 'RW', 'required|trim');
         $this->form_validation->set_rules('kategori', 'Kategori', 'required|trim');
-        $this->form_validation->set_rules('meter_pertama', 'Meter Pertama', 'required|trim');
         $this->form_validation->set_rules('tggl_pemasangan', 'Tanggal Pemasangan', 'required|trim');
 
         if ($this->form_validation->run()) {
@@ -82,10 +80,8 @@ class Pelanggan extends CI_Controller {
             $j_kelamin = $_POST['j_kelamin'];
             $desa = $_POST['desa'];
             $kecamatan = $_POST['kecamatan'];
-            $rt = $_POST['rt'];
             $rw = $_POST['rw'];
             $kategori = $_POST['kategori'];
-            $meter_pertama = $_POST['meter_pertama'];
             $tggl_pemasangan = $_POST['tggl_pemasangan'];
 
             $data = array(
@@ -94,10 +90,8 @@ class Pelanggan extends CI_Controller {
                 'j_kelamin'	=> $j_kelamin,
                 'desa' => $desa,
                 'kecamatan'	=> $kecamatan,
-                'rt'	=> $rt,
                 'rw'	=> $rw,
                 'kategori'	=> $kategori,
-                'meter_pertama'	=> $meter_pertama,
                 'tggl_pemasangan'	=> $tggl_pemasangan
             );
 
@@ -117,9 +111,7 @@ class Pelanggan extends CI_Controller {
         $this->form_validation->set_rules('nama_pelanggan', 'Nama Lengkap', 'required|trim');
         $this->form_validation->set_rules('desa', 'Desa', 'required|trim');
         $this->form_validation->set_rules('kecamatan', 'Kecamatan', 'required|trim');
-        $this->form_validation->set_rules('rt', 'RT', 'required|trim');
         $this->form_validation->set_rules('rw', 'RW', 'required|trim');
-        $this->form_validation->set_rules('meter_pertama', 'Meter Pertama', 'required|trim');
         $this->form_validation->set_rules('tggl_pemasangan', 'Tanggal Pemasangan', 'required|trim');
 
         if ($this->form_validation->run()) {
@@ -127,18 +119,14 @@ class Pelanggan extends CI_Controller {
             $nama_pelanggan = $_POST['nama_pelanggan'];
             $desa = $_POST['desa'];
             $kecamatan = $_POST['kecamatan'];
-            $rt = $_POST['rt'];
             $rw = $_POST['rw'];
-            $meter_pertama = $_POST['meter_pertama'];
             $tggl_pemasangan = $_POST['tggl_pemasangan'];
 
             // $tambah = $this->Menu_model->tambahData('data_peminjam', $data);
             $this->db->set('nama_pelanggan', $nama_pelanggan);
             $this->db->set('desa', $desa);
             $this->db->set('kecamatan', $kecamatan);
-            $this->db->set('rt', $rt);
             $this->db->set('rw', $rw);
-            $this->db->set('meter_pertama', $meter_pertama);
             $this->db->set('tggl_pemasangan', $tggl_pemasangan);
             $this->db->where('id_pelanggan', $id_pelanggan);
             $this->db->update('pelanggan');

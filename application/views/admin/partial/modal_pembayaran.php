@@ -103,6 +103,36 @@
                 </div>
                 <div class="col">
                     <div class="form-group tb-point ml-auto">
+                        <label><b>Harga air</b></label>
+                        <?php 
+                            foreach ($menu_we as $d):
+                        ?>
+                        <input type="text" class="form-control" readonly value="<?= $d['harga_air'];?>" id="harga" name="harga">
+                        <?php endforeach;?>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group tb-point ml-auto">
+                        <label><b>Beban</b></label>
+                        <?php
+                            foreach ($menu_we as $d):
+                        ?>
+                        <input type="number" class="form-control" readonly value="<?= $d['beban'];?>" id="bebanya" name="bebanya">
+                        <?php endforeach;?>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group tb-point ml-auto">
+                        <label><b>PMA</b></label>
+                        <?php
+                            foreach ($menu_we as $d):
+                        ?>
+                        <input type="number" class="form-control" readonly value="<?= $d['pma'];?>" id="pma" name="pma">
+                        <?php endforeach;?>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group tb-point ml-auto">
                         <label><b>Total Tagihan</b></label>
                         <input type="text" readonly value="0" name="total_tagihan" class="form-control"
                             id="total_tagihan">

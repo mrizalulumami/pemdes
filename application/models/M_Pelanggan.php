@@ -18,11 +18,11 @@ class M_Pelanggan extends CI_Model
 		$hsl = $this->db->query($query);
 		return $hsl;
 	}
-	public function report_excell2($tahun)
+	public function report_excell2($bulan)
 	{
-		$query = "SELECT `pembayaran`.*, `pelanggan`.`nama_pelanggan`,`pelanggan`.`desa`,`pelanggan`.`kecamatan`,`pelanggan`.`kategori`
+		$query = "SELECT `pembayaran`.*, `pelanggan`.`nama_pelanggan`,`pelanggan`.`rw`,`pelanggan`.`desa`,`pelanggan`.`kecamatan`,`pelanggan`.`kategori`
 			FROM `pembayaran` JOIN `pelanggan`
-			ON `pembayaran`.`id_pelanggan` = `pelanggan`.`id_pelanggan` where `pembayaran`.`tahun`='$tahun'";
+			ON `pembayaran`.`id_pelanggan` = `pelanggan`.`id_pelanggan` where `pembayaran`.`bulan`='$bulan'";
 
 		$hsl = $this->db->query($query);
 		return $hsl;
@@ -41,17 +41,31 @@ class M_Pelanggan extends CI_Model
 			return $hsl;
 		}
 	}
+	// public function pelaporan_pembayaran($keyword)
+	// {
+	// 	if (!$keyword == null) {
+	// 		$hsl = $this->db->query("SELECT tahun, COUNT(tahun) AS total
+	// 		FROM pembayaran  where tahun='$keyword'
+	// 		GROUP BY tahun");
+	// 		return $hsl;
+	// 	} else {
+	// 		$hsl = $this->db->query("SELECT tahun, COUNT(tahun) AS total
+	// 		FROM pembayaran
+	// 		GROUP BY tahun");
+	// 		return $hsl;
+	// 	}
+	// }
 	public function pelaporan_pembayaran($keyword)
 	{
 		if (!$keyword == null) {
-			$hsl = $this->db->query("SELECT tahun, COUNT(tahun) AS total
-			FROM pembayaran  where tahun='$keyword'
-			GROUP BY tahun");
+			$hsl = $this->db->query("SELECT bulan,tahun, COUNT(bulan) AS total
+			FROM pembayaran where tahun='$keyword'
+			GROUP BY bulan desc");
 			return $hsl;
 		} else {
-			$hsl = $this->db->query("SELECT tahun, COUNT(tahun) AS total
+			$hsl = $this->db->query("SELECT bulan,tahun, COUNT(bulan) AS total
 			FROM pembayaran
-			GROUP BY tahun");
+			GROUP BY bulan desc");
 			return $hsl;
 		}
 	}
@@ -180,7 +194,7 @@ class M_Pelanggan extends CI_Model
 	public function count_berkas1()
 	{
 		$hasil = $this->db->query("SELECT COUNT(id_pembayaran) AS total
-		FROM pembayaran");
+		FROM pembayaran WHERE bayar != 0");
 		return $hasil->result_array(0);
 	}
 	public function count_berkas2()

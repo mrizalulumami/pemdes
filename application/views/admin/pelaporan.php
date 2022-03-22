@@ -81,12 +81,12 @@
                                 foreach ($laporan_pembayaran->result_array() as $a) :
                                 ?>
                                     <tr>
-                                        <td>Data pembayaran <?= $a['tahun']; ?></td>
+                                        <td>Data pembayaran bulan <?= $a['bulan']; ?></td>
                                         <td>Berisi data pembayaran PAMDES Pringgasela tahun <?= $a['tahun']; ?></td>
                                         <td><?= $a['total']; ?> Data</td>
                                         <td>Dimodifikasi pada tahun <?= $a['tahun']; ?></td>
                                         <td>
-                                            <a type="button" href="<?= base_url('admin/export_excell2/').$a['tahun'];?>">Download</a>
+                                            <a type="button" href="<?= base_url('admin/export_excell2/').$a['bulan'];?>">Download</a>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>

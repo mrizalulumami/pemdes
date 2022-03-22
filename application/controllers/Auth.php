@@ -38,7 +38,8 @@ class Auth extends CI_Controller {
             if ($user['is_active'] == 1) {
                 if (password_verify($password, $user['password'])) {
                     $data = [
-                        'username' => $user['username']
+                        'username' => $user['username'],
+                        'id_petugas' => $user['id_petugas']
                     ];
                     $this->session->set_userdata($data);
                   
@@ -98,5 +99,58 @@ class Auth extends CI_Controller {
     public function blocked()
     {
         $this->load->view('auth/blocked');
+    }
+    public function edit_petugas(){
+
+        $id_user = $this->session->userdata('id_petugas');
+       
+        $this->form_validation->set_rules('nama_petugas', 'Nama Petugas', 'required|trim');
+        $this->form_validation->set_rules('username', 'Username', 'required|trim');
+        // $this->form_validation->set_rules('password1', 'Password1', 'required|trim');
+        // $this->form_validation->set_rules('password2', 'Password2 ', 'required|trim');
+        // $this->form_validation->set_rules('password_baru', 'Password Baru ', 'required|trim');
+
+        if ($this->form_validation->run()) {
+            $nama_petugas = $_POST['nama_petugas'];
+            $username = $_POST['username'];
+            $password1 = $_POST['password_baru'];
+            // $password2 = password_hash($this->input->post('password2'), PASSWORD_DEFAULT);
+            $password_baru = password_hash($password1, PASSWORD_DEFAULT);
+            // if($password2 != $password1){
+            //     $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">password lama tidak sama!</div>');
+            //     redirect(base_url('admin/profile'));
+            // }else{
+            //     $this->db->set('nama_petugas', $nama_petugas);
+            //     $this->db->set('username', $username);
+            //     $this->db->set('pasword', $password_baru);
+            //     $this->db->where('id_petugas', $id_user);
+            //     $this->db->update('users');
+                
+            //     $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Data Berhasil Diedit!</div>');
+            //     redirect(base_url('admin/profile'));
+            // }
+            if(!$password1 == null | !$password1 == ''){
+                $this->db->set('nama_petugas', $nama_petugas);
+                $this->db->set('username', $username);
+                $this->db->set('password', $password_baru);
+                $this->db->where('id_petugas', $id_user);
+                $this->db->update('users');
+                
+                $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Data Berhasil Diedit!</div>');
+                redirect(base_url('admin/profile'));
+            }else{
+                $this->db->set('nama_petugas', $nama_petugas);
+                $this->db->set('username', $username);
+                $this->db->where('id_petugas', $id_user);
+                $this->db->update('users');
+                
+                $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Data Berhasil Diedit!</div>');
+                redirect(base_url('admin/profile'));
+            }
+            // echo $password1.' = '.$password2;
+           
+        }else{
+            redirect('admin/profile');
+        }
     }
 }

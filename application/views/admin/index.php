@@ -111,15 +111,18 @@
                                 <td><?= $a['id_pelanggan']; ?></td>
                                 <td><?= $a['nama_pelanggan']; ?></td>
                                 <td><?= $a['bayar']; ?></td>
-                                <td><?php
+                                <td>
+                                    <?php
 										if ($a['total_tagihan'] == $a['bayar']) {
 											echo '<p style="color:#55ff00;">Lunas</p>';
 										} else if ($a['bayar'] < $a['total_tagihan']) {
 											echo '<p style = "color: #ff0000;">Belum Lunas</p>';
-										} else {
+										} else if ($a['bayar'] > $a['total_tagihan']) {
+											echo '<p style="color:#55ff00;">Lunas</p>';
+										}else {
 											echo '<p style = "color: #ff0000;">Belum Lunas</p>';
-										} ?>
-                                </td>
+										} ?></td>
+                                <td>
                             </tr>
                             <?php endforeach; ?>
                         </tbody>

@@ -34,9 +34,10 @@
 								<tr>
 									<th>Nomor Pelanggan</th>
 									<th>Nama Pelanggan</th>
+									<th>RW</th>
+									<th>Desa</th>
+									<th>Kecamatan</th>
 									<th>Kategori</th>
-									<th>Alamat</th>
-									<th>RT/RW</th>
 									<th>Tgl Daftar</th>
 									<th>Action</th>
 								</tr>
@@ -49,17 +50,10 @@
 									<tr>
 										<td><?php echo $a['id_pelanggan']; ?></td>
 										<td><?php echo $a['nama_pelanggan']; ?></td>
-										<td><?php if ($a['kategori'] == 'std') {
-												echo 'Standar';
-											} elseif ($a['kategori'] == 'kms') {
-												echo 'Keluarga Miskin';
-											} elseif ($a['kategori'] == 'ins') {
-												echo 'Dinas / Instansi';
-											} elseif ($a['kategori'] == 'msj') {
-												echo 'Mushola / Masjid';
-											} ?></td>
-										<td><?= $a['desa']; ?>, <?= $a['kecamatan']; ?></td>
-										<td><?= $a['rt']; ?>/<?= $a['rw']; ?></td>
+										<td><?= $a['rw']; ?></td>
+										<td><?= $a['desa']; ?></td>
+										<td><?= $a['kecamatan']; ?></td>
+										<td><?= $a['kategori']; ?></td>
 										<td><?= $a['tggl_pemasangan']; ?></td>
 										<td>
 											<center>

@@ -15,7 +15,7 @@ foreach ($pelanggan->result_array() as $a) {
         <div class="mt-2">
 
             <?= form_open_multipart('admin/acc_pembayaran'); ?>
-            <input readomly type="text" id="id_pembayaran" name="id_pembayaran" value="<?=$a['id_pembayaran'];?>">
+            <input readomly type="hidden" id="id_pembayaran" name="id_pembayaran" value="<?=$a['id_pembayaran'];?>">
             <table>
                 <tr>
                     <th>Nomor Pelanggan</th>

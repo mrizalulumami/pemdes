@@ -7,10 +7,105 @@
   <script type="text/javascript" src="<?= base_url('assets/'); ?>js/plugins/bootstrap-datepicker.min.js"></script>
   <script type="text/javascript" src="<?= base_url('assets/'); ?>js/plugins/dataTables.bootstrap.min.js"></script>
 
+  <script>
+        $(function () {
+            $('button[id="cek"]').prop('disabled', true);
+            // $('input[id="password2"]').prop('hidden', true);
+            // $('input[id="form_paslama"]').prop('hidden', true);
+            $('#nama_petugas').on('input', function (e) {
+                if (this.value.length >= 3) {
+                    $('button[id="cek"]').prop('disabled', false);
+                    // $('input[id="password2"]').prop('hidden', false);
+                    // $('input[id="form_paslama"]').prop('hidden', false);
+                } else {
+                    $('button[id="cek"]').prop('disabled', true);
+                    $('input[id="password2"]').prop('hidden', true);
+                    $('input[id="form_paslama"]').prop('hidden', true);
+                }
+            });
+        });
+        $(function () {
+            $('button[id="cek"]').prop('disabled', true);
+            // $('input[id="password2"]').prop('hidden', true);
+            // $('input[id="form_paslama"]').prop('hidden', true);
+            $('#username').on('input', function (e) {
+                if (this.value.length >= 5) {
+                    $('button[id="cek"]').prop('disabled', false);
+                    // $('input[id="password2"]').prop('hidden', false);
+                    // $('input[id="form_paslama"]').prop('hidden', false);
+                } else {
+                    $('button[id="cek"]').prop('disabled', true);
+                    // $('input[id="password2"]').prop('hidden', true);
+                    // $('input[id="form_paslama"]').prop('hidden', true);
+                }
+            });
+        });
+        $(function () {
+            $('button[id="cek"]').prop('disabled', true);
+            // $('input[id="password2"]').prop('hidden', true);
+            // $('input[id="form_paslama"]').prop('hidden', true);
+            $('#password_baru').on('input', function (e) {
+                if (this.value.length >= 5) {
+                    $('button[id="cek"]').prop('disabled', false);
+                    // $('input[id="password2"]').prop('hidden', false);
+                    // $('input[id="form_paslama"]').prop('hidden', false);
+                } else {
+                    $('button[id="cek"]').prop('disabled', true);
+                    // $('input[id="password2"]').prop('hidden', true);
+                    // $('input[id="form_paslama"]').prop('hidden', true);
+                }
+            });
+        });
+        // $(function () {
+        //     $('button[id="cek"]').prop('disabled', true);
+        //     $('input[id="password2"]').prop('hidden', true);
+        //     $('input[id="form_paslama"]').prop('hidden', true);
+        //     $('#password_baru').on('input', function (e) {
+        //         if (this.value.length >= 6) {
+        //             $('button[id="cek"]').prop('disabled', false);
+        //             $('input[id="password2"]').prop('hidden', false);
+        //             $('input[id="form_paslama"]').prop('hidden', false);
+        //         } else {
+        //             $('button[id="cek"]').prop('disabled', true);
+        //             $('input[id="password2"]').prop('hidden', true);
+        //             $('input[id="form_paslama"]').prop('hidden', true);
+        //         }
+        //     });
+        // });
+        // $(function () {
+        //     $('button[id="cek"]').prop('disabled', true);
+        //     $('#password').on('input', function (e) {
+        //         if (this.value.length >= 6) {
+        //             $('button[id="cek"]').prop('disabled', false);
+        //         } else {
+        //             $('button[id="cek"]').prop('disabled', true);
+        //         }
+        //     });
+        // });
+  </script>
+
   <script type="text/javascript">
 // $('#sampleTable').DataTable();
 $('#sampleTable').dataTable({
     "searching": false
+});
+$('#tabel_rw').dataTable({
+    "searching": false,
+    "bPageLength": 5,
+    "bLengthChange": false,
+    "info": false
+});
+$('#tabel_desa').dataTable({
+    "searching": false,
+    "bPageLength": 5,
+    "bLengthChange": false,
+    "info": false
+});
+$('#tabel_kecamatan').dataTable({
+    "searching": false,
+    "bPageLength": 5,
+    "bLengthChange": false,
+    "info": false
 });
 $('#sampleTable2').dataTable({
     "searching": false
@@ -27,13 +122,24 @@ $('#tabel_jumdes').dataTable({});
   <script>
     function calculateTotal() {
         let unit_price = {
-            air: 500
+            air: parseInt($("#harga").val())
         };
+        let unit_bebanya = {
+            beban: parseInt($("#bebanya").val())
+        };
+        let unit_pma = {
+            pma: parseInt($("#pma").val())
+        };
+        let biaya_perusahaan = {}
         let item_price = {}
+        let total = {}
 
+        biaya_perusahaan = (unit_bebanya.beban+unit_pma.pma)
         item_price = ($("#meter_akhir").val() - $("#meter_awal").val())
+        total = (item_price * unit_price.air )
         $("#pemakaian").val(item_price);
-        $("#total_tagihan").val(item_price * unit_price.air);
+        $("#total_tagihan").val(total + biaya_perusahaan);
+        // $("#total_tagihan").val(biaya_perusahaan);
 
 
     }

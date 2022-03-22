@@ -38,20 +38,17 @@
             <div class="form-row">
                 <div class="col">
                     <div class="form-group tb-point">
-                        <label for="exampleInputEmail1"><b>Alamat</b></label>
-                        <input type="text" name="nama_pelanggan" placeholder="Tulis nama lengkap pelanggan"
-                            class="form-control" id="nama_pelanggan" aria-describedby="emailHelp">
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="form-group tb-point">
                         <label for="exampleInputEmail1"><b>RW</b></label>
                         <div class="input-group mb-3">
                             <select class="custom-select" name="rw" id="rw">
                                 <option selected>Pilih RW</option>
-                                <option value="Aik Dewa">Aik Dewa</option>
-                                <option value="Pringgasela">Pringgasela</option>
-                                <option value="Pringgasela Selatan">Pringgasela Selatana</option>
+                                <?php
+                                    foreach ($menu_rw as $d) :
+                                ?>
+                                <option value="<?= $d['alamat'];?>"><?= $d['alamat'];?></option>
+                                <?php endforeach;?>
+                                <!-- <option value="Pringgasela">Pringgasela</option>
+                                <option value="Pringgasela Selatan">Pringgasela Selatana</option> -->
                             </select>
                         </div>
                     </div>
@@ -62,9 +59,11 @@
                         <div class="input-group mb-3">
                             <select class="custom-select" name="desa" id="desa">
                                 <option selected>Pilih Desa</option>
-                                <option value="Aik Dewa">Aik Dewa</option>
-                                <option value="Pringgasela">Pringgasela</option>
-                                <option value="Pringgasela Selatan">Pringgasela Selatan</option>
+                                <?php
+                                    foreach ($menu_desa as $d) :
+                                ?>
+                                <option value="<?=$d['desa']?>"><?=$d['desa']?></option>
+                               <?php endforeach;?>
                             </select>
                         </div>
                     </div>
@@ -75,7 +74,11 @@
                         <div class="input-group mb-3">
                             <select class="custom-select" name="kecamatan" id="kecamatan">
                                 <option selected>Kecamatan</option>
-                                <option value="Kecamatan Pringgasela">Pringgasela</option>
+                                <?php
+                                    foreach ($menu_kecamatan as $d) :
+                                ?>
+                                <option value="<?=$d['kecamatan']?>"><?=$d['kecamatan']?></option>
+                                <?php endforeach;?>
                             </select>
                         </div>
                     </div>
@@ -88,10 +91,11 @@
                         <div class="input-group mb-3">
                             <select class="custom-select" name="kategori" id="kategori">
                                 <option selected>Pilih Kategori</option>
-                                <option value="std">Standar</option>
-                                <option value="kms">Keluarga Miskin</option>
-                                <option value="ins">Dinas/Instansi</option>
-                                <option value="msj">Mushola/Masjid</option>
+                                <?php
+                                    foreach ($menu_ktg as $d) :
+                                ?>
+                                <option value="<?=$d['kategori']?>"><?=$d['kategori']?></option>
+                                <?php endforeach;?>
                             </select>
                         </div>
                     </div>

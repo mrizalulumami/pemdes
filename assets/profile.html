@@ -117,7 +117,8 @@
                         <div class="form-group row">
                             <label class="col-sm-2 col-form-label">Nama Lengkap</label>
                             <div class="col-sm-6">
-                                <input type="text" class="form-control" placeholder="Nama Lengkap" id="inputPassword">
+                                <input type="text" class="form-control" placeholder="Nama Lengkap" id="disform"
+                                    data-maxlength="3" required="required">
                             </div>
                         </div>
                         <div class="form-group row">
@@ -129,9 +130,15 @@
                         <div class="form-group row">
                             <label class="col-sm-2 col-form-label">Password</label>
                             <div class="col-sm-6">
-                                <input type="password" class="form-control" placeholder="password" id="inputPassword">
+                                <input type="password" class="form-control" placeholder="Password" id="inputPassword">
+                                <div class="d-flex mt-3">
+                                    <div class="ml-auto">
+                                        <button class="btn btn-info" type="submit" id="cek" disabled="disabled">Simpan</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+
                     </form>
                 </div>
             </div>
@@ -142,6 +149,18 @@
     <script src="js/popper.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/main.js"></script>
+    <script>
+        $(function () {
+            $('button[id="cek"]').prop('disabled', true);
+            $('#disform').on('input', function (e) {
+                if (this.value.length >= 3) {
+                    $('button[id="cek"').prop('disabled', false);
+                } else {
+                    $('button[id="cek""]').prop('disabled', true);
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>
